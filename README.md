@@ -1,1 +1,241 @@
-# OYAM
+<GÜZELİMMMMM>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barışalım mı?</title>
+<style>
+  body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px 0;
+    background: #111;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: #fff;
+    overflow-x: hidden;
+  }
+  #photo, #final-video {
+    width: 90%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px #ff4d6d;
+  }
+  #sentence {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 20px;
+    padding: 0 10px;
+  }
+  #emoji {
+    font-size: 50px;
+    margin-bottom: 10px;
+  }
+  button {
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 0 10px #fff;
+  }
+  #yes { background-color: #ff4d6d; color: white; }
+  #yes:disabled { opacity: 0.5; cursor: not-allowed; }
+  #yes:hover { transform: scale(1.1); }
+  #no { background-color: #555; color: white; }
+  #no:disabled { opacity: 0.5; cursor: not-allowed; }
+  #start-music { background-color: #ff69b4; color: white; font-size: 20px; margin-top: 20px; }
+  #confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+  }
+
+  @media screen and (max-width: 480px) {
+    #photo, #final-video { max-width: 300px; }
+    button { padding: 12px 20px; font-size: 16px; margin: 5px; }
+    #start-music { font-size: 18px; padding: 12px 20px; }
+    #sentence { font-size: 16px; }
+    #emoji { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<img id="photo" src="foto1.jpg" alt="Fotoğraf">
+<video id="final-video" controls style="display:none;">
+  <source src="son-video.mp4" type="video/mp4">
+  Tarayıcınız video oynatamıyor.
+</video>
+
+<div id="sentence"></div>
+<div id="emoji"></div>
+<div>
+  <button id="yes" disabled>Evet</button>
+  <button id="no">Hayır</button>
+</div>
+<button id="start-music">Müziği Başlat 🎵</button>
+<audio id="music" loop>
+  <source src="muzik.mp3" type="audio/mpeg">
+  Tarayıcınız ses çalamıyor.
+</audio>
+<canvas id="confetti-canvas"></canvas>
+
+<script>
+const sentences = [
+"Her şey aynı kalsın❤️","Seni çok seviyorum❤️","Bu hatamı telafi edeceğim❤️","Asla korkma❤️",
+"İlk ve son yanlışımdı❤️","Sana tamamen sadık kalacağım❤️","Kalbim hep seninle❤️","Geçmişi unutup ileriye bak❤️",
+"Sen benim en değerlimsin❤️","Her zaman yanında olacağım❤️","Birlikte güzel anılar biriktirelim❤️","Senin mutluluğun her şeyden önemli❤️",
+"Sana değer vermeye devam edeceğim❤️","Her zaman dürüst olacağım❤️","Yanında olmasam bile seni düşünüyorum❤️","Sana güvenini tekrar kazandıracağım❤️",
+"Birlikte güçlü olacağız❤️","Her gün seni daha çok seveceğim❤️","Bu ilişkiyi büyüteceğiz❤️","Hayatımı seninle paylaşmak istiyorum❤️",
+"Hiçbir şey değişmesin❤️","Sana verdiğim sözleri tutacağım❤️","Geçmişin gölgesine kapılmayacağız❤️","İçimdeki sevgi hep taze❤️",
+"Sana her zaman saygı göstereceğim❤️","Zorluklar olsa da yanındayım❤️","Sana değerimi her gün göstereceğim❤️","Hiçbir şeyi göz ardı etmeyeceğim❤️",
+"Sana güven vermek için çabalayacağım❤️","Her anını değerli kılmak istiyorum❤️","Sana söz veriyorum❤️","Hep birlikte olacağız❤️",
+"Kalbimde tek sen varsın❤️","Hiçbir şeyi değiştirmeyeceğim❤️","Bu anı ölümsüzleştireceğiz❤️","İşte son cümle, seni çok seviyorum ❤️"
+];
+
+let currentIndex = 0;
+const photo = document.getElementById('photo');
+const video = document.getElementById('final-video');
+const sentenceDiv = document.getElementById('sentence');
+const yesBtn = document.getElementById('yes');
+const noBtn = document.getElementById('no');
+const music = document.getElementById('music');
+const startBtn = document.getElementById('start-music');
+const emojiDiv = document.getElementById('emoji');
+
+function updateContent(emoji=""){
+  if(currentIndex < sentences.length - 1){
+    photo.style.display="block";
+    video.style.display="none";
+    photo.src = `foto${currentIndex + 1}.jpg`;
+    sentenceDiv.textContent = sentences[currentIndex] + " — Barışalım mı?";
+    emojiDiv.textContent = emoji;
+    yesBtn.disabled = true;
+    noBtn.disabled = false;
+  } else {
+    yesBtn.disabled = false;
+    noBtn.disabled = true;
+  }
+}
+
+noBtn.addEventListener('click', () => {
+  if(currentIndex < sentences.length - 1){
+    currentIndex++;
+    updateContent("😢");
+  }
+});
+
+yesBtn.addEventListener('click', () => {
+  startConfetti();
+  sentenceDiv.textContent = "Evet dedin! Seni çok seviyorum SULTANIM💖 asla korkma ilk ve son hatamdı. Karıcım, bu yolculuk boyunca yaşadığımız her anı, yaptığım hataları ve seni kırdığım anları çok düşündüm. Sana yalan söylediğim için, güvenini sarstığım için pişmanım; bunu asla hafife almıyorum ve bir daha tekrarlamayacağım. Biliyorum, güven kırıldığında kolayca geri gelmiyor ama sana söz veriyorum, kalbimde hep sana sadık bir sevgi olacak ve asla aldatmayacağım. Geleceğimiz için her adımımı dikkatle atacağım, seni kaybetmek istemiyorum. Geçmişteki hatalarımla yüzleşiyorum ve bunları telafi etmek için elimden geleni yapacağım. Her zaman yanında olacağım, saygı göstereceğim ve sana hak ettiğin değeri vereceğim. Bu ilişkiyi birlikte güçlendirip, geçmişi bir yük olarak değil, bize ders veren bir deneyim olarak hatırlayacağız. Her zaman senin güvenini kazanmak ve sevgimizi daha sağlam temellere oturtmak için çabalayacağım. Seni çok seviyorum ve hayatımı seninle paylaşmak istiyorum; sana her zaman değer vereceğim ve birlikte yaşlanmayı hayal ediyorum❤️";
+  emojiDiv.textContent = "💖";
+
+  // Fotoğrafı gizle, video göster ve başlat
+  photo.style.display = "none";
+  video.style.display = "block";
+  video.play();
+
+  yesBtn.disabled = true;
+  noBtn.disabled = true;
+});
+
+startBtn.addEventListener('click', async () => {
+  try { await music.play(); startBtn.style.display='none'; }
+  catch(e){ console.log("Müzik çalamadı:", e); }
+});
+
+updateContent();
+
+// Abartılı konfeti
+function startConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ["#ff4d6d","#ff69b4","#ff1493","#ffb6c1","#ff8c00","#ffff00","#ff4500","#ff6347","#ff00ff","#00ffff","#00ff00","#ffff66"];
+  const shapes = ["heart","star","circle","line"];
+  const confettis = [];
+
+  for(let i=0;i<1800;i++){
+    confettis.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height - canvas.height,
+      r: Math.random()*10+5,
+      d: Math.random()*150,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      tilt: Math.random()*10-5,
+      shape: shapes[Math.floor(Math.random()*shapes.length)],
+      speed: Math.random()*4+1
+    });
+  }
+
+  function drawHeart(x, y, r, color){
+    ctx.fillStyle=color; ctx.beginPath();
+    ctx.moveTo(x,y);
+    ctx.bezierCurveTo(x,y-r/2,x-r,y-r/2,x-r,y+r/3);
+    ctx.bezierCurveTo(x-r,y+r,x,y+r*1.5,x,y+r*2);
+    ctx.bezierCurveTo(x,y+r*1.5,x+r,y+r,x+r,y+r/3);
+    ctx.bezierCurveTo(x+r,y-r/2,x,y-r/2,x,y); ctx.closePath(); ctx.fill();
+  }
+
+  function drawStar(x, y, r, color){
+    ctx.fillStyle=color; ctx.beginPath();
+    for(let i=0;i<5;i++){
+      ctx.lineTo(x+r*Math.cos((18+i*72)/180*Math.PI),y-r*Math.sin((18+i*72)/180*Math.PI));
+      ctx.lineTo(x+r/2*Math.cos((54+i*72)/180*Math.PI),y-r/2*Math.sin((54+i*72)/180*Math.PI));
+    }
+    ctx.closePath(); ctx.fill();
+  }
+
+  function drawCircle(x, y, r, color){
+    ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x,y,r/2,0,Math.PI*2); ctx.fill();
+  }
+
+  function drawLine(x, y, r, color){
+    ctx.strokeStyle=color; ctx.lineWidth=2; ctx.beginPath();
+    ctx.moveTo(x,y);
+    ctx.lineTo(x+r*Math.cos(Math.random()*360),y+r*Math.sin(Math.random()*360));
+    ctx.stroke();
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confettis.forEach(c=>{
+      let scale=0.8+Math.sin(Date.now()/300+c.x)%0.4;
+      switch(c.shape){
+        case "heart": drawHeart(c.x, c.y, c.r*scale, c.color); break;
+        case "star": drawStar(c.x, c.y, c.r*scale, c.color); break;
+        case "circle": drawCircle(c.x, c.y, c.r*scale, c.color); break;
+        case "line": drawLine(c.x, c.y, c.r*scale, c.color); break;
+      }
+      c.y+=c.speed;
+      c.x+=Math.sin(c.d+Date.now()/500)*2;
+      if(c.y>canvas.height){c.y=-10;c.x=Math.random()*canvas.width;}
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+window.addEventListener('resize',()=>{
+  const canvas=document.getElementById('confetti-canvas');
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+});
+</script>
+
+</body>
+</html>
