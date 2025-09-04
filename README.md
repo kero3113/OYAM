@@ -1,4 +1,4 @@
-<GÜZELİMMMMM>
+
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
